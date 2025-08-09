@@ -1,0 +1,56 @@
+{
+  "version": 2,
+  "name": "life-management-app",
+  "builds": [
+    {
+      "src": "backend/server.js",
+      "use": "@vercel/node",
+      "config": {
+        "includeFiles": [
+          "backend/**",
+          "frontend/build/**"
+        ]
+      }
+    },
+    {
+      "src": "frontend/package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "buildCommand": "npm run build",
+        "outputDirectory": "build"
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "backend/server.js"
+    },
+    {
+      "src": "/health",
+      "dest": "backend/server.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "frontend/build/index.html"
+    }
+  ],
+  "env": {
+    "NODE_ENV": "production",
+    "MONGODB_URI_PROD": "@mongodb-uri",
+    "JWT_SECRET": "@jwt-secret",
+    "CLIENT_URL": "@client-url",
+    "API_URL": "@api-url"
+  },
+  "build": {
+    "env": {
+      "REACT_APP_API_URL": "@api-url"
+    }
+  },
+  "functions": {
+    "backend/server.js": {
+      "memory": 1024,
+      "maxDuration": 30
+    }
+  }
+}
